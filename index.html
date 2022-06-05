@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <title>Frontend Mentor | Expenses chart component</title>
+
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+     @font-face { font-family: dmsans; src: url('font/DMSans-Bold.ttf'); } 
+    body{
+      background-color: #F7E9DC;
+      font-family: dmsans;
+      font-size: 18px;
+    }
+    .container{
+      display: grid;
+      justify-content: center;
+      margin: 5%;
+    }
+    .bal_container{
+      background-color: #EC755D;
+      padding: 10px;
+      color: #fff;
+      width: 400px;
+      margin-bottom: 20px;
+      border-radius: 7px;
+      position: relative;
+    }
+    p{
+      margin: 0px;
+    }
+    .chart-container{
+      background-color: #fff;
+      width: 400px;
+      margin: 0px;
+      padding:10px;
+      border-radius: 7px;
+    }
+    .bal-txt{
+      font-size: 14px;
+      font-weight: 100;
+      line-height: 2;
+    }
+    .ft-wt4{
+      font-weight: 400;
+    }
+    .ft-wt7{
+      font-weight: 700;
+    }
+    #myChart{
+      width:100%;max-width:400px;height: 200px;margin-bottom: 20px;
+    }
+    .span{
+      border: 2px solid #f7f2e4;
+    }
+    .total-container{
+      padding: 10px;
+    }
+    p.total{
+      font-size: 32px;
+    }
+    .total-txt{
+      font-size: 14px;
+      color: #9c9898;
+    }
+    .last-mont-txt{
+      float: right;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: right;
+      line-height: 1;
+    }
+    .ft-size{
+      font-size: 28px;
+    }
+    span{
+      float: right;
+    }
+    span.white-circle{
+      width: 25px;
+      height: 25px;
+      background: transparent;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      position: absolute;
+      right: 35px;
+    }
+    span.black-circle{
+      width: 25px;
+      height: 25px;
+      background: #000;
+      border: 1px solid #000;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    @media (max-width:750px) {
+      #myChart{
+        max-width:300px;height: 200px;margin-bottom: 20px;
+      }
+      .bal_container,.chart-container{
+        width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="bal_container">
+      <p class="bal-txt">My balance</p>
+      <p class="ft-wt7 ft-size">$921.48 <span class="black-circle"></span><span class="white-circle"></span></p>
+    </div>
+
+  <!-- Spending - Last 7 days
+
+  
+
+  Total this month
+  $478.33
+
+  +2.4%
+  from last month -->
+    <div class="chart-container">
+      <h2>Spending - Last 7 days</h2>
+      <canvas id="myChart"></canvas>
+      <div class="span"></div>
+      <div class="total-container">
+        <p class="total-txt">Total this month</p>
+         <p class="ft-wt7 total"> $478.33
+           <span class="last-mont-txt ft-wt7">+2.4%<br>
+            <span class="total-txt">from last month</span></span>
+         </p>
+         
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+     //this is the code for the chart
+     function chart(){
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: datax.datalabel,
+              datasets: [{
+                  
+                  data: datax.actualData,
+                  backgroundColor: [
+                      'rgba(236, 117, 93, 1)',
+                      'rgba(236, 117, 93, 1)',
+                      'rgba(118, 181, 187,1)',
+                      'rgba(236, 117, 93, 1)',
+                      'rgba(236, 117, 93, 1)',
+                      'rgba(236, 117, 93, 1)',
+                  ],
+                  borderRadius: 7,
+              }]
+          },
+          options: {
+              plugins:{
+                legend:{
+                  display:false
+                }
+              },
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      display:false,
+                      grid:{
+                        display: true,
+                        drawBorder: false,
+                        drowOnChartArea: false,
+                      }
+                  },
+                  x:{
+                    grid:{
+                      display: false,
+                      drawBorder:false,
+                      drowOnChartArea: false
+                    }
+                  }
+              }
+          }
+      });
+     }
+     var datax = {
+       datalabel:[],
+       actualData:[]
+    };
+     function chartData(){
+      fetch('data.json')
+      .then((response) => response.json())
+      .then((json) => {
+        json.forEach(val =>{
+          datax.datalabel.push(val.day);
+          datax.actualData.push(val.amount);
+        })
+        
+        chart();
+      });
+     }
+     chartData();
+  </script>
+</body>
+</html>
